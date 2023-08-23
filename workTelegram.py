@@ -27,7 +27,7 @@ logger.add("file_1.log", rotation="50 MB")
 gpt = GPT()
 GPT.set_key(os.getenv('KEY_AI'))
 bot = telebot.TeleBot(os.getenv('TELEBOT_TOKEN'))
-sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','цены на дома 4.0 актуально ')
+#sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','цены на дома 4.0 актуально ')
 sql = workYDB.Ydb()
 
 URL_USERS = {}
@@ -68,8 +68,8 @@ def say_welcome(message):
     answer, allToken, allTokenPrice, message_content = gpt.answer_index(model, text, history, model_index,temp=0.5, verbose=0)
     add_message_to_history(message.chat.id, 'assistant', answer) 
     bot.send_message(message.chat.id, answer, 
-                     parse_mode='markdown',
-                     reply_markup= create_menu_keyboard())
+                     parse_mode='markdown',)
+                     #reply_markup= create_menu_keyboard())
 #expert_promt = gpt.load_prompt('https://docs.google.com/document/d/181Q-jJpSpV0PGnGnx45zQTHlHSQxXvkpuqlKmVlHDvU/')
 
 @bot.message_handler(commands=['restart'])
