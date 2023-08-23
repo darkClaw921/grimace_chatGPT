@@ -185,6 +185,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     message_content = re.sub(r'\n{2}', ' ', '\n '.join([f'\nОтрывок документа №{i+1}\n=====================' + doc.page_content + '\n' for i, doc in enumerate(docs)]))
     if (verbose): print('message_content :\n ======================================== \n', message_content)
 
+    
     systemMess = 'Данные, на основании которых нужно продолжить диалог:'
     messages = [
       {"role": "system", "content": system + f"{systemMess} {message_content}"},
@@ -192,7 +193,11 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
       #{"role": "user", "content": context}
       ]
     messages.extend(history)
-
+    if history == []:
+      messages = [
+      {"role": "system", "content": system + f"{message_content}"},
+      #{"role": "user", "content": context}
+      ]
     # example token count from the function defined above
     if (verbose): print('\n ===========================================: ')
     if (verbose): print(f"{self.num_tokens_from_messages(messages, 'gpt-3.5-turbo-0301')} токенов использовано на вопрос")

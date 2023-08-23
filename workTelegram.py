@@ -64,7 +64,7 @@ def say_welcome(message):
     #text = """Здравствуйте, я AI ассистент компании Сканди ЭкоДом. Я отвечу на Ваши вопросы по поводу строительства загородного дома и задам свои 😁. Хотите я Вам расскажу про варианты комплектации домов?
     #"""
     text = """Здравствуйте"""
-    history = get_history(str(message.chat.id))
+    history = []
     answer, allToken, allTokenPrice, message_content = gpt.answer_index(model, text, history, model_index,temp=0.5, verbose=0)
     add_message_to_history(message.chat.id, 'assistant', answer) 
     bot.send_message(message.chat.id, answer, 
