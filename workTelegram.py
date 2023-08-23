@@ -218,8 +218,10 @@ def any_message(message):
 
     #выборка 
     #logger.info(f'{message_content=}')
-        
-    bot.send_message(message.chat.id, answer,  parse_mode='markdown')
+    try:    
+        bot.send_message(message.chat.id, answer,  parse_mode='markdown')
+    except:
+        bot.send_message(message.chat.id, answer,)
     media_group = []
     photoFolder = -1
 
@@ -301,7 +303,7 @@ def any_message(message):
     now = datetime.now()+timedelta(hours=3)
     #now = datetime.now()
 # Format the date and time according to the desired format
-    formatted_date = now.strftime("%Y-%m-%dT%H:%M:%S")
+    formatted_date = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     
     #answer, allToken, allTokenPrice= gpt.answer(' ',mess,)
     row = {'all_price': float(allTokenPrice), 'all_token': int(allToken), 'all_messages': 1}
