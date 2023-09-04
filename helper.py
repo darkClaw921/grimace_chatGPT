@@ -5,6 +5,13 @@ from loguru import logger
 from datetime import datetime
 from workGDrive import *
 from telebot.types import InputMediaPhoto
+from dotenv import load_dotenv
+import os
+import requests
+load_dotenv()
+
+mexc_secret_key = os.environ.get('mexc_secret_key') 
+mexc_api_key = os.environ.get('mexc_api_key') 
 # any
 def time_epoch():
     from time import mktime
@@ -155,3 +162,24 @@ def download_photo(urlExtract, URL_USERS, userID,):
     #    logger.error(e)
         #answer = 'Извините сейчас не могу найти актуальную ссылку'
     return URL_USERS, media_group, nameProject
+
+def get_grimace_price():
+    url = 'https://www.mexc.com/open/api/v2/market/ticker?symbol=grimace_usdt'
+    #response = requests.get(url,).json()
+    #print(response['data'])
+    try:
+        response = requests.get(url,)
+        data = response.json()
+
+        if response.status_code == 200 and data['code'] == 200:
+            price = float(data['data'][0]['last'])
+            return price
+        else:
+            print("Ошибка при запросе данных с API MEXC")
+
+    except requests.exceptions.RequestException as e:
+        print("Ошибка при отправке запроса к API MEXC:", str(e))
+
+if __name__ == '__main__':
+    a = get_grimace_price()
+    print(a)

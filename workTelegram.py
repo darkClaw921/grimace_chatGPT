@@ -58,7 +58,7 @@ def say_welcome(message):
     row = {'id': 'Uint64', 'MODEL_DIALOG': 'String', 'TEXT': 'String'}
     sql.create_table(str(message.chat.id), row)
     #row = {'id': message.chat.id, 'payload': '',}
-    row = {'id': message.chat.id, 'model': '', 'promt': '','nicname':username, 'payload': ''}
+    row = {'id': abs(message.chat.id), 'model': '', 'promt': '','nicname':username, 'payload': ''}
     sql.replace_query('user', row)
     
     #text = """Здравствуйте, я AI ассистент компании Сканди ЭкоДом. Я отвечу на Ваши вопросы по поводу строительства загородного дома и задам свои 😁. Хотите я Вам расскажу про варианты комплектации домов?
@@ -87,12 +87,12 @@ def restart_modal_index(message):
 def send_button(message):
     global URL_USERS
     URL_USERS={}
-    payload = sql.get_payload(message.chat.id)
+    #payload = sql.get_payload(message.chat.id)
     
 
     #answer = gpt.answer(validation_promt, context, temp = 0.1)
-    sql.delete_query(message.chat.id, f'MODEL_DIALOG = "{payload}"')
-    sql.set_payload(message.chat.id, ' ')
+   # sql.delete_query(message.chat.id, f'MODEL_DIALOG = "{payload}"')
+   # sql.set_payload(message.chat.id, ' ')
     #bot.send_message(message.chat.id, answer)
     clear_history(message.chat.id)
     bot.send_message(message.chat.id, 
@@ -116,7 +116,7 @@ def handle_photo(message):
     file_url = f"https://api.telegram.org/file/bot{os.getenv('TELEBOT_TOKEN')}/{file_info.file_path}" 
     fileName = download_file(file_url)
     create_lead_and_attach_file([fileName], username)
-    bot.reply_to(message, f'Спасибо, мы просчитаем Ваш проект и свяжемся с вами')
+    #bot.reply_to(message, f'Спасибо, мы просчитаем Ваш проект и свяжемся с вами')
 
 @bot.message_handler(content_types=['document'])
 def handle_document(message):
@@ -137,13 +137,26 @@ def handle_document(message):
 
 #@logger.catch
 @bot.message_handler(content_types=['text'])
+@logger.catch
 def any_message(message):
     global URL_USERS
     #print('это сообщение', message)
     #text = message.text.lower()
     text = message.text
-    userID= message.chat.id
-    payload = sql.get_payload(userID)
+    if message.chat.id < 0 and message.text.find('?') == -1:
+        return 0 
+
+    userID= abs(message.chat.id)
+    try:
+        payload = sql.get_payload(userID)
+    except:
+        username = message.from_user.username
+        row = {'id': 'Uint64', 'MODEL_DIALOG': 'String', 'TEXT': 'String'}
+        sql.create_table(str(message.chat.id), row)
+        #row = {'id': message.chat.id, 'payload': '',}
+        row = {'id': abs(message.chat.id), 'model': '', 'promt': '','nicname':username, 'payload': ''}
+        sql.replace_query('user', row)
+    
 
     if payload == 'addmodel':
         text = text.split(' ')
@@ -164,6 +177,8 @@ def any_message(message):
         model= gpt.load_prompt(PROMT_URL) 
     except:
         model= gpt.load_prompt(PROMT_URL) 
+    
+    model = model.replace('[price]', str(get_grimace_price()))
 
     lastMessage = history[-1]['content'] 
         
@@ -174,7 +189,7 @@ def any_message(message):
         logger.info(f'ответ сети если нет ощибок: {answer}')
         #print('мы получили ответ \n', answer)
     except Exception as e:
-        bot.send_message(userID, e)
+        #bot.send_message(userID, e)
         #bot.send_message(userID, 'начинаю sammury: ответ может занять больше времени, но не более 3х минут')
         history = get_history(str(userID))
         #summaryHistory = gpt.get_summary(history)
@@ -219,9 +234,11 @@ def any_message(message):
     #выборка 
     #logger.info(f'{message_content=}')
     try:    
-        bot.send_message(message.chat.id, answer,  parse_mode='markdown')
+        #bot.send_message(message.chat.id, answer,  parse_mode='markdown')
+        bot.reply_to(message, answer,  parse_mode='markdown')
     except:
-        bot.send_message(message.chat.id, answer,)
+        #bot.send_message(message.chat.id, answer,)
+        bot.reply_to(message, answer,)
     media_group = []
     photoFolder = -1
 
