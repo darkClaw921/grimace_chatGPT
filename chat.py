@@ -273,10 +273,11 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     roleAsnwer= {'role': 'user', 'content': answer}
     return roleAsnwer
    
-  def summarize_questions(self,history:list):
+  def summarize_questions(self,history:list, summary_promt=''):
     # Применяем модель gpt-3.5-turbo-0613 для саммаризации вопросов
     messages = [
         {"role": "system", "content": "Ты - ассистент компании, основанный на AI. Ты умеешь профессионально суммаризировать присланные тебе диалоги менеджера и клиента. Твоя задача - суммаризировать диалог, который тебе пришел."},
+        {"role": "system", "content":summary_promt},
         {"role": "user", "content": "Суммаризируй следующий диалог менеджера и клиента: "}
     ]
     #messages.extend(history[:-1])

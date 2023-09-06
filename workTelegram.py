@@ -142,6 +142,11 @@ def any_message(message):
     global URL_USERS
     #print('это сообщение', message)
     #text = message.text.lower()
+    reply_to = message.reply_to_message
+    #print(f'{reply_to=}')
+    if reply_to is not None:
+        return 0 
+    #pprint(reply_to)
     text = message.text
     if message.chat.id < 0 and message.text.find('?') == -1:
         return 0 
@@ -193,7 +198,8 @@ def any_message(message):
         #bot.send_message(userID, 'начинаю sammury: ответ может занять больше времени, но не более 3х минут')
         history = get_history(str(userID))
         #summaryHistory = gpt.get_summary(history)
-        summaryHistory1 = gpt.summarize_questions(history)
+        promt_summary= gpt.load_prompt('https://docs.google.com/document/d/1O9lJUnDT_yqDnfip0xIvvomsb4DT_oei8kEi6JUV0CA/edit?usp=sharing') 
+        summaryHistory1 = gpt.summarize_questions(history,promt_summary)
         logger.info(f'summary истории1 {summaryHistory1}')
         #logger.info(f'summary истории {summaryHistory}')
         #print(f'summary: {summaryHistory}')
