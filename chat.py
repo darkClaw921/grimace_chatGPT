@@ -65,6 +65,7 @@ class GPT():
     #gsText = sheet.get_gs_text()
     #gsText = ''
     #print(f'{gsText=}')
+    
     text1 = text + gsText
     #print(f'{text1=}')
     return self.create_embedding(text1)

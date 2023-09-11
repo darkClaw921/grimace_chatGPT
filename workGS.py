@@ -16,7 +16,7 @@ class Sheet():
             jsonPath, self.scope)  # Секретынй файл json для доступа к API
         self.client = gspread.authorize(self.creds)
         self.sheet = self.client.open(
-            sheetName).sheet1  # get_worksheet(0)  # Имя таблицы
+            sheetName).get_worksheet(1)  # get_worksheet(0)  # Имя таблицы
 
     @logger.catch
     def send_cell(self, cell: str, value, form: bool = False):
@@ -46,7 +46,7 @@ class Sheet():
         return self.sheet.row_values(i)
     
     def get_gs_text(self):
-        allText = '\n\n<Описание Проектов>'
+        allText = '\n\n==========\nСписок актуальних мероприятий'
         urls={}
         b =1
         for i in tqdm(range(2,118)):
@@ -55,6 +55,8 @@ class Sheet():
             #if b == 10: 
             #    return allText, urls
             text = self.get_rom_value(i)
+            #logger.debug(f'{text=}')
+            if text == []: return allText, urls 
             time.sleep(1.2)
             a, url= prepare_text(text)
             allText += a
@@ -83,37 +85,16 @@ class table:
 def prepare_text(lst:list):
     text = ''
     urls = {}
-    try:
-        lst[table.H]=lst[table.H].replace('\xa0', ' ')
-        lst[table.I]=lst[table.I].replace('\xa0', ' ')
-        lst[table.J]=lst[table.J].replace('\xa0', ' ')
-    except Exception as e:
-        print('ошибка в GS prepare_text ',e)
-        text = f"""
-<Проект: {lst[table.C]}>""" 
-        return text
-    
+    #logger.debug(f'{lst=}')
     text = f"""
-<Проект: {lst[table.C]}>
+==========\n{lst[table.A]}
 
-м.кв.: {lst[table.F]}
-
-Количество этажей: {lst[table.D]}
-Стиль: {lst[table.E]}
-
-{lst[table.G]}
-{lst[table.H]}
-
-Стоимость {lst[table.C]}:
-Закрытый контур: {lst[table.J]}
-Теплый контур: {lst[table.K]}
-Внешняя отделка: {lst[table.L]}
-
-Фото проекта:{lst[table.C]}
-{lst[table.I]}
+Дата проведения:\n {lst[table.B]}
+Подробная информация:\n {lst[table.C].replace('https://','')}
+Комментарий:\n {lst[table.D].replace('https://', '')}
     """
     print(f'{text=}')
-    urls.setdefault(lst[table.C], lst[table.I])
+    # urls.setdefault(lst[table.C], lst[table.I])
     return text,urls 
 
 

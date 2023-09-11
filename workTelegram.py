@@ -27,15 +27,15 @@ logger.add("file_1.log", rotation="50 MB")
 gpt = GPT()
 GPT.set_key(os.getenv('KEY_AI'))
 bot = telebot.TeleBot(os.getenv('TELEBOT_TOKEN'))
-#sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','цены на дома 4.0 актуально ')
+sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','Доработка AI бота Grimace')
 sql = workYDB.Ydb()
 
 URL_USERS = {}
 
 MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
-#gsText, urls_photo = sheet.get_gs_text()
-#print(f'{urls_photo=}')
-model_index=gpt.load_search_indexes(MODEL_URL) 
+gsText, urls_photo = sheet.get_gs_text()
+# print(f'{gsText=}')
+model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
 PROMT_URL = 'https://docs.google.com/document/d/1Oiys8iwstN4Ugjfz3pnD3LFGpHHgVHwUTp2ILjqcbsw/edit?usp=sharing'
 model= gpt.load_prompt(PROMT_URL)
 
@@ -75,13 +75,14 @@ def say_welcome(message):
 @bot.message_handler(commands=['restart'])
 def restart_modal_index(message):
     global model_index, model 
-    model_index=gpt.load_search_indexes(MODEL_URL)
-    #url = 'https://docs.google.com/document/d/1f4GMt2utNHsrSjqwE9tZ7R632_ceSdgK6k-_QwyioZA/edit?usp=sharing'
-    #model= gpt.load_prompt(url)
-    model= gpt.load_prompt(PROMT_URL)
+  
+    MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
+    gsText, urls_photo = sheet.get_gs_text()
+    # print(f'{gsText=}')
+    model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
     bot.send_message(message.chat.id, 'Обновлено', 
-                     parse_mode='markdown',
-                     reply_markup= create_menu_keyboard())
+                     parse_mode='markdown',)
+                     #reply_markup= create_menu_keyboard())
 
 @bot.message_handler(commands=['context'])
 def send_button(message):
@@ -161,7 +162,8 @@ def any_message(message):
         #row = {'id': message.chat.id, 'payload': '',}
         row = {'id': abs(message.chat.id), 'model': '', 'promt': '','nicname':username, 'payload': ''}
         sql.replace_query('user', row)
-    
+
+    payload = '' 
 
     if payload == 'addmodel':
         text = text.split(' ')
