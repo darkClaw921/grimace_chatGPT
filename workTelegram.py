@@ -34,6 +34,7 @@ URL_USERS = {}
 
 MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
 gsText, urls_photo = sheet.get_gs_text()
+#gsText = ''
 # print(f'{gsText=}')
 model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
 PROMT_URL = 'https://docs.google.com/document/d/1Oiys8iwstN4Ugjfz3pnD3LFGpHHgVHwUTp2ILjqcbsw/edit?usp=sharing'
@@ -144,7 +145,9 @@ def any_message(message):
     #print('это сообщение', message)
     #text = message.text.lower()
     reply_to = message.reply_to_message
-    #print(f'{reply_to=}')
+    logger.debug(f'{message.from_user.username=}')
+    logger.debug(f'{message.from_user}')
+    logger.debug(f'{message.chat.id}')
     if reply_to is not None:
         return 0 
     #pprint(reply_to)
@@ -152,18 +155,19 @@ def any_message(message):
     if message.chat.id < 0 and message.text.find('?') == -1:
         return 0 
 
-    userID= abs(message.chat.id)
+    userID= abs(message.from_user.id)
     try:
         payload = sql.get_payload(userID)
     except:
         username = message.from_user.username
         row = {'id': 'Uint64', 'MODEL_DIALOG': 'String', 'TEXT': 'String'}
-        sql.create_table(str(message.chat.id), row)
+        sql.create_table(userID, row)
         #row = {'id': message.chat.id, 'payload': '',}
-        row = {'id': abs(message.chat.id), 'model': '', 'promt': '','nicname':username, 'payload': ''}
+        row = {'id': userID, 'model': '', 'promt': '','nicname':username, 'payload': ''}
         sql.replace_query('user', row)
 
-    payload = '' 
+    payload = ''
+
 
     if payload == 'addmodel':
         text = text.split(' ')
