@@ -19,6 +19,13 @@ from telebot.types import InputMediaPhoto
 from workRedis import *
 import workGS
 from workFaiss import *
+
+#если sqlite3 не поддерживается на системе
+# pip3 install pysqlite3-binary
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 load_dotenv()
 
 
