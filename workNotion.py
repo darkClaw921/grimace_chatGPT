@@ -10,18 +10,18 @@ from notion.client import NotionClient
 from notion.block import TodoBlock, TextBlock, ColumnBlock
 
 
-# Obtain the `token_v2` value by inspecting your browser cookies on a logged-in (non-guest) session on Notion.so
-client = NotionClient(token_v2=tokenv2)
+# # Obtain the `token_v2` value by inspecting your browser cookies on a logged-in (non-guest) session on Notion.so
+# client = NotionClient(token_v2=tokenv2)
 
 # cv = client.get_collection_view("https://www.notion.so/56b7c3ec37c447c0b14ee5b6dc4541d9?v=7ae17d16a0d141c8953615f7153b1c11")
 # print(cv.name)
 # row = cv.collection.add_row()
 # row.name = "https://www.notion.so/summary-Bot-a6b32907e0094c01970d64279cf7897a"
-# row.text = 'as'
+# row.text = 'a12s'
 # row.tags = ["A", "C"]
 
 
-def create_page(name):
+def create_page(date,text):
     # Initialisation
     import requests, json
     token = 'secret_vDGlOnviQsHbbQiERTXZylKPAuSEjeyHfz0ZqQoJuTL'
@@ -41,7 +41,7 @@ def create_page(name):
                 "title": [
                     {
                         "text": {
-                            "content": "DONA"
+                            "content": f"{date}"
                         }
                     }
                 ]
@@ -50,7 +50,7 @@ def create_page(name):
                     "rich_text": [
                         {
                             "text": {
-                                "content": "This is thienqc"
+                                "content": text
                             },
                         }
                     ]
@@ -62,5 +62,6 @@ def create_page(name):
     res = requests.request("POST", createUrl, headers=headers, data=data)
     print(res.text)
 
+
 if __name__ == '__main__':
-    create_page('a')
+    create_page('18-32-24','test txt')

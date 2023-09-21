@@ -19,6 +19,8 @@ from telebot.types import InputMediaPhoto
 from workRedis import *
 import workGS
 from workFaiss import *
+from flask import Flask
+app = Flask(__name__)
 
 #если sqlite3 не поддерживается на системе
 # pip3 install pysqlite3-binary
@@ -40,8 +42,8 @@ sql = workYDB.Ydb()
 URL_USERS = {}
 
 MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
-gsText, urls_photo = sheet.get_gs_text()
-#gsText = ''
+## gsText, urls_photo = sheet.get_gs_text()
+gsText = ''
 # print(f'{gsText=}')
 model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
 PROMT_URL = 'https://docs.google.com/document/d/1Oiys8iwstN4Ugjfz3pnD3LFGpHHgVHwUTp2ILjqcbsw/edit?usp=sharing'
@@ -367,6 +369,23 @@ def any_message(message):
     sql.insert_query('all_user_dialog',  rows)
 
 
-    
-print(f'[OK]')
-bot.infinity_polling()
+@app.route('/summary')
+def create_sum_all_dealog():
+    gpt.summari_all_dialog()
+
+
+if __name__ == '__main__':
+    import threading
+    import multiprocessing
+
+    flask_thread = threading.Thread(target=app.run(host='0.0.0.0',port='5001',debug=False))
+    telebot_thread = threading.Thread(target=bot.infinity_polling())
+
+    flask_process = multiprocessing.Process(target=flask_thread.start)
+    telebot_process = multiprocessing.Process(target=telebot_thread.start)
+
+    flask_process.start()
+    telebot_process.start()
+    print(f'[OK]')
+
+

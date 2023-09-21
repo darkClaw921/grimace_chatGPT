@@ -8,12 +8,21 @@ from langchain.prompts import PromptTemplate
 import ipywidgets as widgets
 from oauth2client.service_account import ServiceAccountCredentials
 import re
-
+import os 
 import openai
 import tiktoken
 import sys
 from loguru import logger
-#import workGS
+from workYDB import Ydb
+from helper import get_dates
+from pprint import pprint
+from dotenv import load_dotenv
+import time
+from workNotion import create_page
+load_dotenv()
+sql = Ydb()
+
+# import workGS
 #logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 #logger.add("file_1.log", rotation="50 MB")
 #sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','цены на дома 4.0 актуально ')
@@ -295,6 +304,43 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     roleAsnwer= {'role': 'user', 'content': answer}
     return roleAsnwer
 
+  def summari_all_dialog(self,):
+        promtDay = self.load_prompt('https://docs.google.com/document/d/1Zen0qqt82vexbdAKQpgTcdEw2Eeq8sV8DPTSsw_XM-g/edit?usp=sharing')
+        promtWeek = self.load_prompt('https://docs.google.com/document/d/1QpsWZJsPEE2-NheZgVb8mokTx6wzw_k7y2OkB3SR4gI/edit?usp=sharing')
+        dateEnd, dateStart = get_dates(-6)
+
+        try:
+            history = sql.select_query('all_user_dialog',f'(date >= CAST ("{dateStart}" as datetime) and date <= CAST("{dateEnd}" as datetime)) and token is null')
+        except KeyError:
+            time.sleep(1)
+            history = sql.select_query('all_user_dialog',f'(date >= CAST ("{dateStart}" as datetime) and date <= CAST("{dateEnd}" as datetime)) and token is null')
+           
+        # pprint(history)
+        logger.debug(f'{len(history)=}')
+        answerDay = []
+        allText = ''
+        for i,row in enumerate(history):
+            i+=1
+            text = row['TEXT'].decode('utf-8').replace('Клиент:','')
+            allText += f"nickname: {row['nicname'].decode('utf-8')} question: {text} \n"
+            if i % 300 == 0:
+                lst = [{"role": "user", "content": allText}]
+                answer = self.answer(promtDay,lst)[0]
+                answerDay.append(answer)
+                allText = ''
+        
+        if len(history) < 300:
+            lst = [{"role": "user", "content": allText}]
+            answer = self.answer(promtDay,lst)[0]
+        else:
+            lst = [{"role": "user", "content": '\n'.join(answerDay)}]
+            answer = self.answer(promtWeek,lst)[0]
+           
+        print(f'{allText=}')
+        print(answer)
+        create_page(dateEnd, answer)
+        
+
   def get_chatgpt_ansver3(self, system, topic, search_index, temp = 1):
     
     messages = [
@@ -309,3 +355,11 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
       temperature=temp
       )
     print('ОТВЕТ : \n', self.insert_newlines(completion.choices[0].message.content))
+
+if __name__ == '__main__':
+   
+#    print(0 % 300)
+#    1/0
+   chat = GPT()
+   chat.set_key(os.getenv('KEY_AI'))
+   chat.summari_all_dialog()

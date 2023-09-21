@@ -8,6 +8,9 @@ from telebot.types import InputMediaPhoto
 from dotenv import load_dotenv
 import os
 import requests
+from workGS import *
+from datetime import datetime, timedelta
+
 load_dotenv()
 
 mexc_secret_key = os.environ.get('mexc_secret_key') 
@@ -20,6 +23,16 @@ def time_epoch():
 
     millis_since_epoch = sec_since_epoch * 1000
     return int(millis_since_epoch)
+
+def get_dates(day, patern = "%Y-%m-%dT%H:%M:%SZ"):
+    # Текущая дата
+    current_date = datetime.now().strftime(patern)
+
+    # Дата, отстоящая на 30 дней
+    delta = timedelta(days=day)
+    future_date = (datetime.now() + delta).strftime(patern)
+
+    return current_date, future_date
 
 def get_model_url(modelName: str):
     modelUrl = sql.select_query('model', f'model = "{modelName}"')[0]['url']
@@ -179,6 +192,8 @@ def get_grimace_price():
 
     except requests.exceptions.RequestException as e:
         print("Ошибка при отправке запроса к API MEXC:", str(e))
+
+
 
 if __name__ == '__main__':
     a = get_grimace_price()
