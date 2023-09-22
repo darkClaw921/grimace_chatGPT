@@ -126,7 +126,7 @@ def handle_photo(message):
     file_info = bot.get_file(file_id)
     file_url = f"https://api.telegram.org/file/bot{os.getenv('TELEBOT_TOKEN')}/{file_info.file_path}" 
     fileName = download_file(file_url)
-    create_lead_and_attach_file([fileName], username)
+    # create_lead_and_attach_file([fileName], username)
     #bot.reply_to(message, f'Спасибо, мы просчитаем Ваш проект и свяжемся с вами')
 
 @bot.message_handler(content_types=['document'])
@@ -140,8 +140,8 @@ def handle_document(message):
     file_url = f"https://api.telegram.org/file/bot{os.getenv('TELEBOT_TOKEN')}/{file_info.file_path}"
         # Отправляем ответное сообщение
     fileName = download_file(file_url)
-    create_lead_and_attach_file([fileName], username)
-    bot.reply_to(message, f'Спасибо, мы просчитаем Ваш проект и свяжемся с вами')
+    # create_lead_and_attach_file([fileName], username)
+    # bot.reply_to(message, f'Спасибо, мы просчитаем Ваш проект и свяжемся с вами')
     
 
     #create_lead_and_attach_file([],userID)
