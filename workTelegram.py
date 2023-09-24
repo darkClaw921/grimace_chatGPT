@@ -378,7 +378,7 @@ if __name__ == '__main__':
     import threading
     import multiprocessing
 
-    flask_thread = threading.Thread(target=app.run(host='0.0.0.0',port='5001',debug=False))
+    flask_thread = threading.Thread(target=app.run(host='0.0.0.0',port='5006',debug=False))
     telebot_thread = threading.Thread(target=bot.infinity_polling())
 
     flask_process = multiprocessing.Process(target=flask_thread.start)
