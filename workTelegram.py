@@ -42,8 +42,9 @@ sql = workYDB.Ydb()
 URL_USERS = {}
 
 MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
-gsText, urls_photo = sheet.get_gs_text()
-# gsText = ''
+#TODO
+# #gsText, urls_photo = sheet.get_gs_text()
+gsText = ''
 # print(f'{gsText=}')
 model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
 PROMT_URL = 'https://docs.google.com/document/d/1Oiys8iwstN4Ugjfz3pnD3LFGpHHgVHwUTp2ILjqcbsw/edit?usp=sharing'
@@ -153,10 +154,11 @@ def any_message(message):
     global URL_USERS
     #print('это сообщение', message)
     #text = message.text.lower()
-    reply_to = message.reply_to_message
+    # reply_to = message.reply_to_message
     logger.debug(f'{message.from_user.username=}')
-    logger.debug(f'{message.from_user}')
-    logger.debug(f'{message.chat.id}')
+    logger.debug(f'{message.from_user=}')
+    logger.debug(f'{message.from_user.id=}')
+    logger.debug(f'{message.chat.id=}')
     # if reply_to is not None:
     #     return 0 
     #pprint(reply_to)
@@ -165,15 +167,24 @@ def any_message(message):
 
     userID= abs(message.from_user.id)
     
-    if message.reply_to_message and message.reply_to_message.from_user != bot.get_me():
+    
+    logger.debug(f'{message=}')
+    
+    logger.debug(f'{message.content_type=}')
+    # logger.debug(f'{message.reply_to_message.from_user.id=}')
+    logger.debug(f'{message.entities=}')
+    logger.debug(f'{bot.get_me().id=}')
+    
+    logger.debug(f'{message.reply_to_message=}')
+    # logger.debug(f'{message.reply_to_message.from_user.id=}')
+    logger.debug(f'{bot.get_me().id=}')
+    
+    
+    if message.reply_to_message is not None and message.reply_to_message.from_user.id != bot.get_me().id:
         return 0 
     
-    if message.reply_to_message and message.reply_to_message.from_user == bot.get_me():
+    if message.reply_to_message is not None and message.reply_to_message.from_user.id == bot.get_me().id:
         1+0
-     
-    elif message.reply_to_message and message.reply_to_message.from_user == bot.get_me():
-        # Проверяем, что сообщение является ответом на сообщение бота
-        response = 'Спасибо за ответ!'
         
     elif message.chat.id < 0 and message.text.find('?') == -1: 
 
