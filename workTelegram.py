@@ -157,14 +157,29 @@ def any_message(message):
     logger.debug(f'{message.from_user.username=}')
     logger.debug(f'{message.from_user}')
     logger.debug(f'{message.chat.id}')
-    if reply_to is not None:
-        return 0 
+    # if reply_to is not None:
+    #     return 0 
     #pprint(reply_to)
     text = message.text
-    if message.chat.id < 0 and message.text.find('?') == -1:
-        return 0 
+    
 
     userID= abs(message.from_user.id)
+    
+    if message.reply_to_message and message.reply_to_message.from_user != bot.get_me():
+        return 0 
+    
+    if message.reply_to_message and message.reply_to_message.from_user == bot.get_me():
+        1+0
+     
+    elif message.reply_to_message and message.reply_to_message.from_user == bot.get_me():
+        # Проверяем, что сообщение является ответом на сообщение бота
+        response = 'Спасибо за ответ!'
+        
+    elif message.chat.id < 0 and message.text.find('?') == -1: 
+
+        return 0
+    
+
     try:
         payload = sql.get_payload(userID)
     except:
@@ -378,13 +393,13 @@ if __name__ == '__main__':
     import threading
     import multiprocessing
 
-    flask_thread = threading.Thread(target=app.run(host='0.0.0.0',port='5006',debug=False))
+    # flask_thread = threading.Thread(target=app.run(host='0.0.0.0',port='5006',debug=False))
     telebot_thread = threading.Thread(target=bot.infinity_polling())
 
-    flask_process = multiprocessing.Process(target=flask_thread.start)
+    # flask_process = multiprocessing.Process(target=flask_thread.start)
     telebot_process = multiprocessing.Process(target=telebot_thread.start)
 
-    flask_process.start()
+    # flask_process.start()
     telebot_process.start()
     print(f'[OK]')
 
