@@ -43,8 +43,8 @@ URL_USERS = {}
 
 MODEL_URL= 'https://docs.google.com/document/d/17a4WtyRxhDk3D2-Kger1eBiekBQ2BmMLTYg3e6joKDI/edit?usp=sharing'
 #TODO
-# #gsText, urls_photo = sheet.get_gs_text()
-gsText = ''
+gsText, urls_photo = sheet.get_gs_text()
+# gsText = ''
 # print(f'{gsText=}')
 model_index=gpt.load_search_indexes(MODEL_URL, gsText=gsText) 
 PROMT_URL = 'https://docs.google.com/document/d/1Oiys8iwstN4Ugjfz3pnD3LFGpHHgVHwUTp2ILjqcbsw/edit?usp=sharing'
