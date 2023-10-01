@@ -71,7 +71,11 @@ async def on_message(message):
     logger.debug(f'{chatID=}')
     logger.debug(f'{userID=}')
     # print(message.type)
-
+    #TODO залить на сервер чтобы обрабатывал сообщения только в одном чате но возможно тогда не будет отвечать в лмчном сообшении 
+    
+    if chatID != 1156326501248151682:
+        return 0
+     
     if message.reference and message.reference.resolved.author.id != bot.user.id:
         return 0 
      
