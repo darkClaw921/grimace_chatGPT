@@ -395,9 +395,7 @@ def any_message(message):
     sql.insert_query('all_user_dialog',  rows)
 
 
-@app.route('/summary')
-def create_sum_all_dealog():
-    gpt.summari_all_dialog()
+
 
 
 if __name__ == '__main__':

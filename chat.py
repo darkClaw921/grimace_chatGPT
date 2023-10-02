@@ -18,7 +18,7 @@ from helper import get_dates
 from pprint import pprint
 from dotenv import load_dotenv
 import time
-from workNotion import create_page
+# from workNotion import create_page
 load_dotenv()
 sql = Ydb()
 
@@ -336,9 +336,10 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
             lst = [{"role": "user", "content": '\n'.join(answerDay)}]
             answer = self.answer(promtWeek,lst)[0]
            
-        print(f'{allText=}')
+        # print(f'{allText=}')
         print(answer)
-        create_page(dateEnd, answer)
+        return answer, len(history)
+        # create_page(dateEnd, answer)
         
 
   def get_chatgpt_ansver3(self, system, topic, search_index, temp = 1):
