@@ -19,8 +19,8 @@ load_dotenv()
 
 
 token = os.getenv('secret_notion')
-databaseID ="56b7c3ec37c447c0b14ee5b6dc4541d9"
-# databaseID ="44d8434d60e547e38720d7736fc3074f"
+# databaseID ="56b7c3ec37c447c0b14ee5b6dc4541d9"
+databaseID ="44d8434d60e547e38720d7736fc3074f"
 headers = {
     "Authorization": "Bearer " + token,
     "Content-Type": "application/json",
@@ -169,7 +169,7 @@ if __name__ == '__main__':
     # print(f'{summ=}')
     main(summ,allQuest)
     # add_content_db('test',12,'google.com')
-    # main('summ','allQuest')
+    # main('summ',123)
 
 
     
