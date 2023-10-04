@@ -167,7 +167,7 @@ if __name__ == '__main__':
     # add_content_db('18-32-24','test txt')
     summ, allQuest = gpt.summari_all_dialog()
     # print(f'{summ=}')
-    main(summ,allQuest)
+    # main(summ,allQuest)
     # add_content_db('test',12,'google.com')
     # main('summ',123)
 

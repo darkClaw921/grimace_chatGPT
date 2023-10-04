@@ -62,7 +62,7 @@ async def on_message(message):
     #text = message.text.lower()
     # reply_to = message.reply_to_message
     username = message.author.name
-    text = message.content 
+    text = message.content.lower() 
     userID = message.author.id
     chatID = message.channel.id
 

@@ -187,7 +187,7 @@ def any_message(message):
         1+0
         
     # elif message.chat.id < 0 and (message.text.find('hey ai,') == -1 or message.text.find('hey ai') == -1): 
-    elif message.chat.id < 0 and message.text.find('hey ai') == -1 : 
+    elif message.chat.id < 0 and text.find('hey ai') == -1 : 
 
         return 0
     
