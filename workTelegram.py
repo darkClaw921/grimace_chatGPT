@@ -162,7 +162,7 @@ def any_message(message):
     # if reply_to is not None:
     #     return 0 
     #pprint(reply_to)
-    text = message.text
+    text = message.text.lower()
     
 
     userID= abs(message.from_user.id)
@@ -186,7 +186,8 @@ def any_message(message):
     if message.reply_to_message is not None and message.reply_to_message.from_user.id == bot.get_me().id:
         1+0
         
-    elif message.chat.id < 0 and message.text.find('?') == -1: 
+    # elif message.chat.id < 0 and (message.text.find('hey ai,') == -1 or message.text.find('hey ai') == -1): 
+    elif message.chat.id < 0 and message.text.find('hey ai') == -1 : 
 
         return 0
     

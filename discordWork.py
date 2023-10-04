@@ -83,7 +83,7 @@ async def on_message(message):
         # Проверяем, что сообщение является ответом на сообщение бота
         response = 'Спасибо за ответ!'
 
-    elif chatID == 1156326501248151682 and text.find('?') == -1: 
+    elif chatID == 1156326501248151682 and text.find('hey ai') == -1: 
     # elif chatID == 1157317115850805300 and text.find('?') == -1: 
         return 0
     
