@@ -67,6 +67,7 @@ def add_content_to_page(blockID:str, text:str):
         headers=headers,
         json=json_data,
     )
+    pprint(response.json())
 
 def create_page(page_id:str, title:str):
     json_data = {
@@ -88,7 +89,7 @@ def create_page(page_id:str, title:str):
     }
 
     response = requests.post('https://api.notion.com/v1/pages', headers=headers, json=json_data)
-    print(response.text)
+    pprint(response.json())
     url=eval(response.text.replace(':null', ':None').replace(':false',':False'))
     return url['url'], url['id']
 
@@ -137,7 +138,7 @@ def add_content_db(title,allQuest, url):
         }
     data = json.dumps(newPageData)
     res = requests.request("POST", createUrl, headers=headers, data=data)
-    print(res.text)
+    pprint(res.json())
 
 def date_now():
     patern = '%Y-%m-%d'
@@ -153,7 +154,7 @@ def main(textSummary, allQuest):
     add_content_to_page(blockID,textSummary)
     add_content_db(f'{dateNow}',allQuest,url)
 
-@api.route('/summaty')
+@api.route('/summary')
 @api.doc(description='Делает саммари из всех сообщений в базе за этот день и отправляет в notion')
 class Create_summry(Resource):
     def post(self):
@@ -167,8 +168,9 @@ if __name__ == '__main__':
     # add_content_db('18-32-24','test txt')
     summ, allQuest = gpt.summari_all_dialog()
     # print(f'{summ=}')
-    # main(summ,allQuest)
+    main(summ,allQuest)
     # add_content_db('test',12,'google.com')
+    # add_content_to_page('5ea60083f2e044539f2f76e2c6ce2b52', 'test2')
     # main('summ',123)
 
 

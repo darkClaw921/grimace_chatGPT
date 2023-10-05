@@ -1,12 +1,12 @@
-from langchain.llms import OpenAI
+# from langchain.llms import OpenAI
 from langchain.docstore.document import Document
 import requests
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.prompts import PromptTemplate
+# from langchain.prompts import PromptTemplate
 import ipywidgets as widgets
-from oauth2client.service_account import ServiceAccountCredentials
+# from oauth2client.service_account import ServiceAccountCredentials
 import re
 import os 
 import openai
