@@ -37,9 +37,11 @@ def add_content_to_page(blockID:str, text:str):
                 'heading_2': {
                     'rich_text': [
                         {
+                            #TODO попробовать запихнуть в глаынй блок весь текст а то возможно только 'should be ≤ `2000`, instead was `6010`.',
                             'type': 'text',
                             'text': {
-                                'content': ':',
+                                # 'content': ':',
+                                'content': text,
                             },
                         },
                     ],
@@ -53,7 +55,7 @@ def add_content_to_page(blockID:str, text:str):
                         {
                             'type': 'text',
                             'text': {
-                                'content': text,
+                                'content': ':',
                                 
                             },
                         },
@@ -144,11 +146,14 @@ def date_now():
     patern = '%Y-%m-%d'
     # patern = '%Y-%m-%dT%H:%M:%S'
     current_date = datetime.now().strftime(patern)
+    # current_date = '2023-10-07'
+
     return current_date
 
 def main(textSummary, allQuest):
     dateNow = date_now()
     title = f'Cаммари на {dateNow}'
+    # title = f'Cаммари на 2023-10-06'
     url,blockID = create_page('610743c8e17b4b498682e17cd1923ef5',title)
     # url,blockID = create_page('a6b32907e0094c01970d64279cf7897a',title)
     add_content_to_page(blockID,textSummary)
