@@ -179,16 +179,26 @@ def any_message(message):
     # logger.debug(f'{message.reply_to_message.from_user.id=}')
     logger.debug(f'{bot.get_me().id=}')
     
-    
-    if message.reply_to_message is not None and message.reply_to_message.from_user.id != bot.get_me().id:
-        return 0 
+    if message.reply_to_message is not None:
+        logger.info('это реплай')
+        if message.reply_to_message.from_user.id != bot.get_me().id:
+            logger.info('это не боту')
+            if text.find('hey ai') >= 0: 
+                logger.info('есть кодовое слово')    
+                text = 'hey ai ' + message.reply_to_message.text 
+                1+0
+            elif text.find('hey ai') == -1:
+                logger.info('нету кодовое слово')    
+                return 0  
+
+    # if message.reply_to_message is not None and message.reply_to_message.from_user.id != bot.get_me().id:
+    #     return 0 
     
     if message.reply_to_message is not None and message.reply_to_message.from_user.id == bot.get_me().id:
         1+0
         
     # elif message.chat.id < 0 and (message.text.find('hey ai,') == -1 or message.text.find('hey ai') == -1): 
     elif message.chat.id < 0 and text.find('hey ai') == -1 : 
-
         return 0
     
 
@@ -205,15 +215,6 @@ def any_message(message):
     payload = ''
 
 
-    if payload == 'addmodel':
-        text = text.split(' ')
-        rows = {'model': text[1], 'url': text[0] }
-        #sql.insert_query('model',rows)
-        sql.replace_query('model',rows)
-        return 0
-    #context = sql.get_context(userID, payload)
-    #if context is None or context == '' or context == []:
-        #context = text
     add_message_to_history(userID, 'user', text)
     history = get_history(str(userID))
     logger.info(f'история {history}')
@@ -243,12 +244,7 @@ def any_message(message):
         promt_summary= gpt.load_prompt('https://docs.google.com/document/d/1O9lJUnDT_yqDnfip0xIvvomsb4DT_oei8kEi6JUV0CA/edit?usp=sharing') 
         summaryHistory1 = gpt.summarize_questions(history,promt_summary)
         logger.info(f'summary истории1 {summaryHistory1}')
-        #logger.info(f'summary истории {summaryHistory}')
-        #print(f'summary: {summaryHistory}')
-        #logger.info(f'история до summary {history}')
-        #print('история до очистки \n', history)
-        #print('история summary \n', summaryHistory)
-        #clear_history(userID)
+     
         history = [summaryHistory1]
         history.extend([{'role':'user', 'content': text}])
         add_old_history(userID,history)
@@ -263,108 +259,18 @@ def any_message(message):
 
         return 0 
     
-    #if message_content 
-    #answer, answerBlock = gpt.answer_index(model, context, model_index, verbose=1)
-    #print('answer_index', answer)
+   
     add_message_to_history(userID, 'assistant', answer)
-    #b = gpt.get_summary(history)
-    #print(f'{b=}')
-    #for i in answerBlock:
-    #    bot.send_message(message.chat.id, i)
-    prepareAnswer= answer.lower()
-    #print(f'{prepareAnswer=}')
-    #print(f"{prepareAnswer.find('спасибо за предоставленный номер')=}") 
-    b = prepareAnswer.find('спасибо за предоставленный номер') 
-    b1 = prepareAnswer.find('наш менеджер свяжется с вами') 
-    b2 = prepareAnswer.find('за предоставленный номер')
-    print(f'{b=}')
-
-    #выборка 
-    #logger.info(f'{message_content=}')
+  
     try:    
         #bot.send_message(message.chat.id, answer,  parse_mode='markdown')
         bot.reply_to(message, answer,  parse_mode='markdown')
     except:
         #bot.send_message(message.chat.id, answer,)
         bot.reply_to(message, answer,)
-    media_group = []
-    photoFolder = -1
-
-    if answer.find('КД-') >= 0:
-        #photoFolder = message_content[0].page_content.find('https://drive') 
-        #logger.info(f'{photoFolder=}')
-        photoFolder = 1
-
-    if photoFolder >= 0:
-        logger.info(f'{URL_USERS=}')
-        pattern = r"КД-\d+"
-
-        matches = re.findall(pattern, answer)
-        matches = list(set(matches))
-        #TODO удалить если нужно чтобы фото отправлялись по 1 разу
-        #URL_USERS={}
-        #TODO переделать чтобы один раз отвечал
-
-        isSendMessage = True
-        trueList = []
-        for project in matches:
-            if URL_USERS == {}: 
-                trueList.append(False) 
-                break
-            try:
-                url = urls_photo[project]
-            except:
-                continue
-            try:
-                a = url in URL_USERS[userID]
-                trueList.append(a)
-            except:
-                trueList.append(False)
-                break
-
-        if all(trueList): isSendMessage = False
-        if isSendMessage: bot.send_message(message.chat.id, 'Подождите, ищу фото проектов...',  parse_mode='markdown')
-
-        for project in matches:
-            #media_group.extend(media_group1)
-            try:
-                url = urls_photo[project]
-                URL_USERS, media_group,nameProject = download_photo(url,URL_USERS,userID,)
-                if media_group == []:
-                    continue
-                bot.send_message(message.chat.id, f'Отправляю фото проекта {nameProject}...',  parse_mode='markdown')
-                bot.send_media_group(message.chat.id, media_group,)
-            except Exception as e:
-                bot.send_message(message.chat.id, f'Извините, не могу найти актуальные фото {project}',  parse_mode='markdown') 
-                logger.error(e)
-        
-        if media_group != []:
-            if len(matches) == 1: 
-                mes = 'Вам понравился проект?'
-            else:
-                mes = 'Какой проект Вам понравился?'
-            bot.send_message(message.chat.id, mes,  parse_mode='markdown')
     
-    if b >= 0 or b1>=0 or b2>=0:
-        print(f"{prepareAnswer.find('cпасибо за предоставленный номер')=}")
-        PROMT_SUMMARY = gpt.load_prompt(PROMT_URL_SUMMARY)
-        history = get_history(str(userID))
-        history_answer = gpt.answer(PROMT_SUMMARY,history)[0]
-        print(f'{history_answer=}')
-        print(f'{answer=}')
-        #bot.send_message(message.chat.id, answer)
-        phone = slice_str_phone(history_answer)
-        pprint(f"{phone=}")
-        
-        print('запиь в битрикс')
-        update_deal(phone, history_answer)
 
-    #try:
-    #    bot.send_media_group(message.chat.id, media_group)
-    #except Exception as e:
-    #    bot.send_message(message.chat.id, e,  parse_mode='markdown')
-
-    #if payload == 'model3':
+   
     now = datetime.now()+timedelta(hours=3)
     #now = datetime.now()
 # Format the date and time according to the desired format

@@ -75,9 +75,21 @@ async def on_message(message):
     
     if chatID != 1156326501248151682:
         return 0
-     
-    if message.reference and message.reference.resolved.author.id != bot.user.id:
-        return 0 
+    
+    if message.reference:
+        logger.info('это реплай')
+        if message.reference.resolved.author.id != bot.user.id:
+            logger.info('это не боту')
+            if text.find('hey ai') >= 0: 
+                logger.info('есть кодовое слово')    
+                text = 'hey ai ' + message.reply_to_message.text 
+                1+0
+            elif text.find('hey ai') == -1:
+                logger.info('нету кодовое слово')    
+                return 0   
+            
+    # if message.reference and message.reference.resolved.author.id != bot.user.id:
+    #     return 0 
      
     if message.reference and message.reference.resolved.author.id == bot.user.id:
         # Проверяем, что сообщение является ответом на сообщение бота
