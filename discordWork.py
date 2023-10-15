@@ -82,7 +82,7 @@ async def on_message(message):
             logger.info('это не боту')
             if text.find('hey ai') >= 0: 
                 logger.info('есть кодовое слово')    
-                text = 'hey ai ' + message.reply_to_message.text 
+                text = 'hey ai ' + message.reference.content
                 1+0
             elif text.find('hey ai') == -1:
                 logger.info('нету кодовое слово')    
