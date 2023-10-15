@@ -169,11 +169,12 @@ class Create_summry(Resource):
         return 'OK'
 
 if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='5008')
     # create_page(data)
     # add_content_db('18-32-24','test txt')
-    summ, allQuest = gpt.summari_all_dialog()
+    # summ, allQuest = gpt.summari_all_dialog()
     # print(f'{summ=}')
-    main(summ,allQuest)
+    # main(summ,allQuest)
     # add_content_db('test',12,'google.com')
     # add_content_to_page('5ea60083f2e044539f2f76e2c6ce2b52', 'test2')
     # main('summ',123)
